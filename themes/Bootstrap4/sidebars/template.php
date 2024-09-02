@@ -4,8 +4,8 @@
  * 'sidebars' layout template
  */
 
-// debug('$page = ' . pre(get_object_vars($page)) );
-// debug('$layout_config = ' . pre($layout_config) );
+// debug('$page = ' . pre(get_object_vars($page)) ); // TODO remove
+// debug('$layout_config = ' . pre($layout_config) ); // TODO remove
 
 // Include current layout functions.php
 include_once($page->theme_dir . '/' . $page->theme_color . '/functions.php');
@@ -44,7 +44,7 @@ include_once($page->theme_dir . '/' . $page->theme_color . '/functions.php');
 			):
 		?>
 			<header role="complementary"
-				class="complementary-header bg-dark <?php echo $complementary_header_classes; ?>">
+				class="complementary-header <?php echo $complementary_header_classes; ?>">
 				<nav class="complementary-nav navbar navbar-dark">
 					<div class="no-container d-flex justify-content-between">
 						<?php 
@@ -78,7 +78,7 @@ include_once($page->theme_dir . '/' . $page->theme_color . '/functions.php');
 
 					<div class="collapse navbar-collapse" id="navbarResponsive">
 
-						<div class="ml-auto"><!--navbar alignment: ml-auto | mx-auto | mr-auto -->
+						<div class="<?php echo $menu_alignment_class; ?>"><!--menu alignment: ml-auto | mx-auto | mr-auto -->
 							<?php
 								// $GP_ARRANGE = false; // prevent deleting the menu via Layout Manager
 								$GP_MENU_ELEMENTS = 'MainNavElements'; // menu formatting function name, see functions.php
@@ -93,7 +93,7 @@ include_once($page->theme_dir . '/' . $page->theme_color . '/functions.php');
 									'li_title'			=> '',
 									'haschildren'		=> 'dropdown-toggle',
 									'haschildren_li'	=> 'dropdown',
-									'child_ul'			=> 'dropdown-menu dropdown-menu-right', // add 'dropdown-menu-right' with right-aligned nav (.navbar-collapse > div.ml-auto)
+									'child_ul'			=> $menu_dropdown_alignment_class, // 'dropdown-menu' | 'dropdown-menu dropdown-menu-right'
 								];
 								// gpOutput::Get('TopTwoMenu'); // Top two level menu
 								gpOutput::Get('Menu'); // Only top level menu
@@ -158,7 +158,7 @@ include_once($page->theme_dir . '/' . $page->theme_color . '/functions.php');
 
 
 			<?php if( !empty($layout_config['show_left_sidebar']['value']) ): ?>
-				<aside class="sidebar sidebar-left sidebar-sticky bg-light">
+				<aside class="sidebar sidebar-left<?php echo $sidebar_left_class; ?>">
 					<div class="sidebar-container">
 						<?php
 							gpOutput::GetArea('Search-Gadget', ''); // as defined in settings.php
@@ -180,7 +180,7 @@ include_once($page->theme_dir . '/' . $page->theme_color . '/functions.php');
 
 
 			<?php if( !empty($layout_config['show_right_sidebar']['value']) ): ?>
-				<aside class="sidebar sidebar-right bg-white">
+				<aside class="sidebar sidebar-right<?php echo $sidebar_right_class; ?>">
 					<div class="sidebar-container">
 						<?php
 							gpOutput::Get('Extra', 'Side_Menu');
@@ -203,5 +203,14 @@ include_once($page->theme_dir . '/' . $page->theme_color . '/functions.php');
 			echo GetMessages();
 		?>
 
-	</body>
+		<div id="detect-bootstrap-breakpoints">
+			<div class="breakpoint-xs d-block d-sm-none d-md-none d-lg-none d-xl-none" data-breakpoint="xs"></div>
+			<div class="breakpoint-sm d-none d-sm-block d-md-none d-lg-none d-xl-none" data-breakpoint="sm"></div>
+			<div class="breakpoint-md d-none d-sm-none d-md-block d-lg-none d-xl-none" data-breakpoint="md"></div>
+			<div class="breakpoint-lg d-none d-sm-none d-md-none d-lg-block d-xl-none" data-breakpoint="lg"></div>
+			<div class="breakpoint-xl d-none d-sm-none d-md-none d-lg-none d-xl-block" data-breakpoint="xl"></div>
+		</div>
+		<div id="breakpoint-navbar-expanded" class="d-none d-<?php echo $navbar_expand_breakpoint; ?>-block"></div>
+
+</body>
 </html>

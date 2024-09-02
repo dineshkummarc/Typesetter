@@ -92,7 +92,7 @@ class Edit extends \gp\admin\Layout{
 		$this->cmds['addcontent']		= 'ShowInIframe';
 		$this->cmds['RemoveArea']		= 'ShowInIframe';
 		$this->cmds['DragArea']			= 'ShowInIframe';
-		$this->cmds['in_iframe']		= 'ShowInIframe';
+		$this->cmds['in_ifrm']		= 'ShowInIframe';
 
 		\gp\tool\Plugins::Action('edit_layout_cmd', [$this->curr_layout]);
 
@@ -184,14 +184,14 @@ class Edit extends \gp\admin\Layout{
 
 		//Iframe
 		echo '<div id="gp_iframe_wrap">';
-		$url = \gp\tool::GetUrl('Admin_Theme_Content/Edit/' . rawurlencode($layout), 'cmd=in_iframe');
+		$url = \gp\tool::GetUrl('Admin_Theme_Content/Edit/' . rawurlencode($layout), 'cmd=in_ifrm');
 		echo '<iframe src="' . $url . '" id="gp_layout_iframe" name="gp_layout_iframe"></iframe>';
 		echo '</div>';
 
 		//CSS Editing
 		ob_start();
 		$form_action = \gp\tool::GetUrl(
-			'Admin_Theme_Content/Edit/' . $this->curr_layout, 'cmd=in_iframe'
+			'Admin_Theme_Content/Edit/' . $this->curr_layout, 'cmd=in_ifrm'
 		);
 		echo '<div id="theme_editor">';
 		echo '<form id="layout_editor_form" action="' . $form_action . '" method="post" ';
@@ -300,14 +300,14 @@ class Edit extends \gp\admin\Layout{
 
 		//preview
 		echo	'<button name="cmd" type="submit" value="PreviewChanges"';
-		echo		' class="gpsubmit gpdisabled" disabled="disabled"';
+		echo		' class="gpvalidate gpsubmit gpdisabled" disabled="disabled"';
 		echo		' data-cmd="preview_changes">';
 		echo		$langmessage['preview'];
 		echo	'</button>';
 
 		//save
 		echo	'<button name="cmd" type="submit" value="SaveChanges"';
-		echo		' class="gpsubmit gpdisabled" disabled="disabled"';
+		echo		' class="gpvalidate gpsubmit gpdisabled" disabled="disabled"';
 		echo		' data-cmd="save_changes">';
 		echo		$langmessage['save'];
 		echo	'</button>';
@@ -468,16 +468,18 @@ class Edit extends \gp\admin\Layout{
 		$placeholder	= !empty($control['placeholder']) ?
 			htmlspecialchars($control['placeholder']) :
 			$langmessage['default'];
-		$minmax_attr	= '';
-
+		$minmax_attrs	= '';
 
 		switch($control['type']){
 			case 'number':
-				if( isset($control['min'])){
-					$minmax_attr .=' min="' . $control['min'] . '"';
+				if( isset($control['min']) && $control['min'] !== false ){
+					$minmax_attrs .= ' min="' . $control['min'] . '"';
 				}
-				if( isset($control['max'])){
-					$minmax_attr .=' max="' . $control['max'] . '"';
+				if( isset($control['max']) && $control['max'] !== false ){
+					$minmax_attrs .= ' max="' . $control['max'] . '"';
+				}
+				if( !empty($control['step']) ){
+					$minmax_attrs .= ' step="' . $control['step'] . '"';
 				}
 			case 'text':
 			case 'url':
@@ -488,12 +490,12 @@ class Edit extends \gp\admin\Layout{
 				}
 				echo '<div class="customizer_input_group">';
 				echo '<input';
-				echo ' name="' . $name_attr . '[value]"';
-				echo ' type="' . htmlspecialchars($control['type']) . '"';
-				echo ' value="' . $current_value . '"';
-				echo $minmax_attr;
-				echo ' placeholder="' . $placeholder . '"';
-				echo '/>';
+				echo	' name="' . $name_attr . '[value]"';
+				echo	' type="' . htmlspecialchars($control['type']) . '"';
+				echo	' value="' . $current_value . '"';
+				echo	$minmax_attrs;
+				echo	' placeholder="' . $placeholder . '"';
+				echo ' />';
 				if( !empty($control['units']) && is_array($control['units']) ){
 					echo '<select class="units"';
 					echo ' name="' . $name_attr . '[units]"';
@@ -518,7 +520,7 @@ class Edit extends \gp\admin\Layout{
 				}
 				echo '<div class="customizer_input_group">';
 				echo '<select';
-				echo ' name="' . $name_attr . '[value]"';
+				echo	' name="' . $name_attr . '[value]"';
 				echo '>';
 				foreach( $control['possible_values'] as $key => $value ){
 					$option_text = !is_numeric($key) ? $key : $value;

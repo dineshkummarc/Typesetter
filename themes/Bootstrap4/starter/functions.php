@@ -19,7 +19,12 @@
  *
  */
 common::LoadComponents('bootstrap4-js,fontawesome');
-
+if( isset($layout_config['mobile_menu_style']['value']) &&
+	( $layout_config['mobile_menu_style']['value'] == 'offcanvas' ||
+		$layout_config['mobile_menu_style']['value'] == 'slideover' )
+){
+	common::LoadComponents('jquery-touch');
+}
 
 /**
  * Load layout javascript, if it exists
@@ -39,8 +44,13 @@ $html_classes = '';
 $complementary_header_classes			= 'd-none d-md-block';
 $complementary_header_container_class	= 'container';
 $header_container_class					= 'container';
+$navbar_expand_breakpoint				= 'lg';
 $navbar_classes							= 'navbar-expand-lg';
+$mobile_menu_style						= 'pulldown'; // 'pulldown' (default) | 'popup' | 'slideover' | 'offcanvas'
+$menu_alignment_class					= 'ml-auto'; // 'ml-auto' = right | 'mx-auto' = center | 'mr-auto' = left
+$menu_dropdown_alignment_class			= 'dropdown-menu dropdown-menu-right';
 $brand_logo_img							= '';
+$brand_logo_alt							= 'Logo';
 $content_container_class				= 'container';
 $footer_container_class					= 'container';
 
@@ -75,17 +85,42 @@ if( isset($layout_config['header_use_container']['value']) &&
 	$header_container_class = 'no-container';
 }
 
+if( isset($layout_config['header_brand_logo_alt_text']['value']) ){
+	$brand_logo_alt = htmlspecialchars($layout_config['header_brand_logo_alt_text']['value']);
+}
+
 if( !empty($layout_config['header_brand_logo']['value']) ){
-	$brand_logo_img = '<img alt="logo" class="brand-logo" src="' .
-		$layout_config['header_brand_logo']['value'] .
+	$brand_logo_img = '<img alt="' . htmlspecialchars($brand_logo_alt) . '" class="brand-logo" ' .
+		'src="' . filter_var($layout_config['header_brand_logo']['value'], FILTER_SANITIZE_SPECIAL_CHARS) .
 		'" />';
 }
 
-if( !empty($layout_config['navbar_expand_breakpoint']['value']) &&
-	$layout_config['navbar_expand_breakpoint']['value'] != 'never'
-){
-	$navbar_classes = ' navbar-expand-' . $layout_config['navbar_expand_breakpoint']['value'];
+if( !empty($layout_config['navbar_expand_breakpoint']['value']) ){
+	$navbar_expand_breakpoint = $layout_config['navbar_expand_breakpoint']['value'];
+	$navbar_classes = ' navbar-expand-' . $navbar_expand_breakpoint;
 }
+
+if( !empty($layout_config['main_menu_align']['value']) ){
+	switch( $layout_config['main_menu_align']['value'] ){
+		case 'left':
+			$menu_alignment_class = 'mr-auto';
+			$menu_dropdown_alignment_class = 'dropdown-menu';
+			break;
+		case 'center':
+			$menu_alignment_class = 'mx-auto';
+			$menu_dropdown_alignment_class = 'dropdown-menu';
+			break;
+		case 'right':
+			$menu_alignment_class = 'ml-auto';
+			$menu_dropdown_alignment_class = 'dropdown-menu dropdown-menu-right';
+			break;
+	}
+}
+
+if( !empty($layout_config['mobile_menu_style']['value']) ){
+	$mobile_menu_style = $layout_config['mobile_menu_style']['value'];
+}
+$html_classes .= ' mobile-menu-' . $mobile_menu_style;
 
 if( isset($layout_config['content_use_container']['value']) &&
 	empty($layout_config['content_use_container']['value'])

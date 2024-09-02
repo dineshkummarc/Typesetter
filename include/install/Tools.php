@@ -196,7 +196,7 @@ class Tools{
 
 
 	public static function Install_DataFiles_New($destination=false, $config=[], $base_install=true){
-		global $langmessage;
+		global $langmessage, $dirPrefix;
 
 		if( $destination === false ){
 			$destination = $GLOBALS['dataDir'];
@@ -215,19 +215,24 @@ class Tools{
 			'"header_sticky":{"value":true},' .
 			'"complementary_header_show":{"value":"md"},' .
 			'"complementary_header_fixed":{"value":false},' .
-			'"navbar_expand_breakpoint":{"value":"lg"}' .
-			'}';
+			'"navbar_expand_breakpoint":{"value":"lg"},' .
+			'"mobile_menu_style":{"value":"pulldown"}' .
+			'};';
 
 		$gpLayouts['default']['config']		= [
-			'header_brand_logo'						=> ['value' => ''], // /themes/Bootstrap4/images/typesetter-logo.svg
+			'header_brand_logo'						=> ['value' => $dirPrefix . '/include/imgs/typesetter/ts-logo-o-color.svg'],
+			'header_brand_logo_alt_text'			=> ['value' => 'Logo'],
 			'header_sticky'							=> ['value' => true],
 			'complementary_header_fixed'			=> ['value' => false],
 			'complementary_header_show'				=> ['value' => 'md'],
 			'complementary_header_use_container'	=> ['value' => true],
 			'header_use_container'					=> ['value' => true],
 			'navbar_expand_breakpoint'				=> ['value' => 'lg'],
+			'main_menu_align'						=> ['value' => 'right'],
+			'mobile_menu_style'						=> ['value' => 'pulldown'],
 			'content_use_container'					=> ['value' => true],
 			'footer_use_container'					=> ['value' => true],
+			'use_avail_classes'						=> ['value' => true],
 		];
 
 		$_config							= [];
@@ -249,7 +254,25 @@ class Tools{
 		$_config['etag_headers']			= self::BooleanValue('etag_headers', true);
 		$_config['gallery_legacy_style']	= false;
 		$_config['language']				= 'en';
-		$_config['addons']					= [];
+		$_config['admin_links']				= [];
+		$_config['addons']					= [
+			'Bootstrap4' => [
+				'code_folder_part' => '/themes/Bootstrap4',
+				'data_folder' => 'Bootstrap4',
+				'name' => 'Bootstrap 4',
+				'version' => '1.0',
+				'is_theme' => true,
+			],
+		];
+		$_config['hooks']					= [
+			'AvailableClasses' => [
+				'Bootstrap4' => [
+					'addon'		=> 'Bootstrap4',
+					'script'	=> '/themes/Bootstrap4/addon.php',
+					'method'	=> [ 'Theme_Bootstrap4', 'AvailableClasses' ],
+				],
+			],
+		];
 
 		$config 							+= $_config;
 
@@ -440,12 +463,12 @@ class Tools{
 
 		//Copyright Notice
 		$file		= $destination . '/data/_extra/Copyright_Notice/page.php';
-		$content	= '<p>&copy; $currentYear My Company</p>';
+		$content	= '<p>&copy; $currentYear My ' . CMS_NAME . '</p>';
 		self::NewExtra($file, $content);
 
 		//Header Contact
 		$file		= $destination . '/data/_extra/Header_Contact/page.php';
-		$content	= '<span><i class="fa fa-envelope">&zwnj;</i>&nbsp;<a href="mailto:hello@mydomain.com">hello@mydomain.com</a></span>
+		$content	= '<span><i class="fa fa-envelope">&zwnj;</i>&nbsp;<a href="mailto:$email">$email</a></span>
 		<span><i class="fa fa-phone">&zwnj;</i>&nbsp;+1 2345 6789 0</span>';
 		self::NewExtra($file, $content);
 

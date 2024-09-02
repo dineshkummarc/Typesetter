@@ -4,8 +4,8 @@
  * 'footer' layout template
  */
 
-// debug('$page = ' . pre(get_object_vars($page)) );
-// debug('$layout_config = ' . pre($layout_config) );
+// debug('$page = ' . pre(get_object_vars($page)) ); // TODO remove
+// debug('$layout_config = ' . pre($layout_config) ); // TODO remove
 
 // Include current layout functions.php
 include_once($page->theme_dir . '/' . $page->theme_color . '/functions.php');
@@ -21,6 +21,8 @@ include_once($page->theme_dir . '/' . $page->theme_color . '/functions.php');
 		<?php
 			gpOutput::GetHead(); // get head content
 		?>
+
+
 	</head>
 
 
@@ -43,7 +45,7 @@ include_once($page->theme_dir . '/' . $page->theme_color . '/functions.php');
 			):
 		?>
 			<header role="complementary"
-				class="complementary-header bg-dark <?php echo $complementary_header_classes; ?>">
+				class="complementary-header <?php echo $complementary_header_classes; ?>">
 				<nav class="complementary-nav navbar navbar-dark">
 					<div class="<?php echo $complementary_header_container_class; ?> d-flex justify-content-between">
 						<?php 
@@ -77,7 +79,7 @@ include_once($page->theme_dir . '/' . $page->theme_color . '/functions.php');
 
 					<div class="collapse navbar-collapse" id="navbarResponsive">
 
-						<div class="ml-auto"><!--navbar alignment: ml-auto | mx-auto | mr-auto -->
+						<div class="<?php echo $menu_alignment_class; ?>"><!--menu alignment: ml-auto | mx-auto | mr-auto -->
 							<?php
 								// $GP_ARRANGE = false; // prevent deleting the menu via Layout Manager
 								$GP_MENU_ELEMENTS = 'MainNavElements'; // menu formatting function name, see functions.php
@@ -92,7 +94,7 @@ include_once($page->theme_dir . '/' . $page->theme_color . '/functions.php');
 									'li_title'			=> '',
 									'haschildren'		=> 'dropdown-toggle',
 									'haschildren_li'	=> 'dropdown',
-									'child_ul'			=> 'dropdown-menu dropdown-menu-right', // add 'dropdown-menu-right' with right-aligned nav (.navbar-collapse > div.ml-auto)
+									'child_ul'			=> $menu_dropdown_alignment_class, // 'dropdown-menu' | 'dropdown-menu dropdown-menu-right'
 								];
 
 								gpOutput::Get('TopTwoMenu'); // Top two level menu
@@ -123,7 +125,7 @@ include_once($page->theme_dir . '/' . $page->theme_color . '/functions.php');
 		</div><!-- /.main-body -->
 
 
-		<footer class="main-footer text-muted bg-light border-top mt-auto pt-3 pb-3 pt-md-5 pb-md-5">
+		<footer class="main-footer mt-auto pt-3 pb-3 pt-md-5 pb-md-5">
 
 			<?php
 				// assign footer nav classes for possible footer menus (e.g. added via Layout Editor)
@@ -147,8 +149,8 @@ include_once($page->theme_dir . '/' . $page->theme_color . '/functions.php');
 				<div class="row">
 					<div class="col-12 col-md-4 footer-column footer-column-1">
 						<?php
+							gpOutput::Get('Extra', 'Footer_Column_1');
 							gpOutput::Get('Extra', 'Copyright_Notice');
-							// gpOutput::Get('Extra', 'Footer_Column_1');
 
 							// Simple Blog Categories Gadget, if installed
 							if( gpOutput::GadgetExists('Simple_Blog_Categories') ){
@@ -161,19 +163,19 @@ include_once($page->theme_dir . '/' . $page->theme_color . '/functions.php');
 						?>
 					</div>
 
-					<div class="col-12 col-md-4 text-center footer-column footer-column-2">
+					<div class="col-12 col-md-4 text-md-center footer-column footer-column-2">
 						<?php
+							gpOutput::Get('Extra', 'Footer_Column_2');
 							// Simple Blog List Gadget, if installed
 							if( gpOutput::GadgetExists('Simple_Blog') ){
 								gpOutput::GetArea('Simple-Blog-Gadget', ''); // as defined in settings.php
 							}
-							// gpOutput::Get('Extra', 'Footer_Column_2');
 						?>
 					</div>
 
 					<div class="col-12 col-md-4 text-md-right footer-column footer-column-3">
 						<?php
-							// gpOutput::Get('Extra', 'Footer_Column_3');
+							gpOutput::Get('Extra', 'Footer_Column_3');
 							gpOutput::GetArea('Admin-Link-Area', ''); // as defined in theme settings.php
 						?>
 					</div>
@@ -189,6 +191,15 @@ include_once($page->theme_dir . '/' . $page->theme_color . '/functions.php');
 			// therefore we prevent message output in the 'Admin-Link-Area' defined in theme settings.php
 			echo GetMessages();
 		?>
+
+		<div id="detect-bootstrap-breakpoints">
+			<div class="breakpoint-xs d-block d-sm-none d-md-none d-lg-none d-xl-none" data-breakpoint="xs"></div>
+			<div class="breakpoint-sm d-none d-sm-block d-md-none d-lg-none d-xl-none" data-breakpoint="sm"></div>
+			<div class="breakpoint-md d-none d-sm-none d-md-block d-lg-none d-xl-none" data-breakpoint="md"></div>
+			<div class="breakpoint-lg d-none d-sm-none d-md-none d-lg-block d-xl-none" data-breakpoint="lg"></div>
+			<div class="breakpoint-xl d-none d-sm-none d-md-none d-lg-none d-xl-block" data-breakpoint="xl"></div>
+		</div>
+		<div id="breakpoint-navbar-expanded" class="d-none d-<?php echo $navbar_expand_breakpoint; ?>-block"></div>
 
 	</body>
 </html>

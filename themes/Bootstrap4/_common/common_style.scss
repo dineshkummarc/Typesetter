@@ -14,12 +14,14 @@
 }
 
 // ### Other Common Imports ###
-// Note:	Since this file (common_style.scss) is imported itself, 
-//				we must also precede the following paths with '../_common_style/',
+// Note:	Because this file (common_style.scss) is imported itself by the layout's style.scss,
+//				we must also prefix the following paths with '../_common_style/',
 //				even though the files to be imported are right here in this directory
 @import '../_common/contact_form.scss';
 @import '../_common/search.scss';
-@import '../_common/simple_blog_common.scss';
+@import '../_common/mobile_menu.scss';
+@import '../_common/more_backgrounds.scss';
+@import '../_common/simple_blog_common.scss'; // adds ~40 KB css, comment this line if you're not using the Simple Blog (plugin)
 
 
 // ### Clearfixes and flex ###
@@ -59,12 +61,10 @@
 // ### Navbar ###
 .navbar {
 	.fa {
-		font-size: 14px;
+		font-size: 14px; // this is FontAwesome's pixel-perfect size
 		line-height: inherit;
 	}
 }
-
-
 
 // navbar areas and their <a> tags inherit the bootstrap style
 .navbar-light {
@@ -163,19 +163,26 @@
 	}
 }
 
+$navbar_expand_breakpoint: lg !default; // customizer overrules
 
 .main-nav {
 	min-height: 72px; // default, will be overruled by customizer
 	// search gadget
 	.gpArea_Search,
 	.gpArea_Search-Gadget {
-		@include vp-flex-basis(10rem);
+		@include vp-flex-basis(7rem);
+		max-width: 10rem;
+		@include media-breakpoint-up($navbar_expand_breakpoint){
+			margin-left: $spacer;
+		}
 		h3,
 		input.submit {
 			display: none;
 		}
 		input.text {
-			@extend .form-control;
+			height: auto; // overrules bootstrap defaults
+			padding: 0.15rem 0.5rem; // overrules bootstrap defaults
+			border-radius: $input-border-radius; // overrules bootstrap input-group defaults
 		}
 	}
 }
@@ -325,7 +332,7 @@ header.complementary-header {
 .sitemap_link,
 .login_link,
 .powered_by_link {
-	display: inline-block;
+	// display: inline-block;
 	margin-bottom: $spacer;
 	a {
 		&:hover,
@@ -350,4 +357,12 @@ header.complementary-header {
 // even when they are at the very right edge
 html.edit_layout .collapse .GPAREA.gp_output_area {
 	min-width: 124px;
+}
+
+
+
+// ### General Typography ###
+
+.lead {
+	font-size: 1.25em; // make relative: rem -> em
 }
